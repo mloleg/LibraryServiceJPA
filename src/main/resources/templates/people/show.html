@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<span>Credentials: </span> <span th:text="${person.getCredentials()}">Person Info</span>
+<br>
+<span>Year of birth:</span> <span th:text="${person.getBirthDate()}">Year of birth</span>
+<br>
+<span>ID: </span> <span th:text="${person.getUserId()}">User ID</span>
+
+<div th:if="${books.isEmpty()}">
+    Person has no assigned books.
+</div>
+
+<div th:if="${!books.isEmpty()}">
+    <div th:each="book : ${books}">
+        <a th:href="@{/books/{id}(id=${book.getBookId()})}" th:style="${book.isExpired()} ? 'color: red'"
+           th:text="${book.getTitle()}">book</a>
+    </div>
+</div>
+
+<hr>
+
+<form th:method="GET" th:action="@{/people/{id}/edit(id=${person.getUserId()})}">
+    <input type="submit" value="Edit"/>
+</form>
+
+<form th:method="DELETE" th:action="@{/people/{id}(id=${person.getUserId()})}">
+    <input type="submit" value="Delete"/>
+</form>
+
+</body>
+</html>
