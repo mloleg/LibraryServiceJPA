@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search</title>
+</head>
+<body>
+
+<form th:method="POST" th:action="@{/books/search}">
+    <label for="query">Enter search query: </label>
+    <input type="text" id="query" name="query"/>
+    <input type="submit" value="Find"/>
+</form>
+<hr>
+
+<!--/*@thymesVar id="books" type="java.util.List"*/-->
+<div th:if="${books}">
+    <div th:if="${books.isEmpty()}">
+        <span>No books found</span>
+    </div>
+
+    <div th:each="book : ${books}">
+        <!--/*@thymesVar id="book" type="ru.mloleg.libraryservicejpa.models.Book"*/-->
+<!--        <p th:text="${book.getTitle() + ', ' + book.getAuthor() + ', ' + book.getPublicationYear()}">book</p>-->
+        <a th:href="@{/books/{id}(id=${book.getBookId()})}"
+           th:text="${book.getTitle() + ', ' + book.getAuthor() + ', ' + book.getPublicationYear()}">book</a>
+
+        <div th:if="${book.getOwner() != null}">
+            <span>Owned by: </span> <span th:text="${book.getOwner().getCredentials()}">Credentials</span>
+        </div>
+
+        <div th:if="${book.getOwner() == null}">
+            <span>The book is free</span>
+        </div>
+        <hr/>
+    </div>
+</div>
+
+</body>
+</html>

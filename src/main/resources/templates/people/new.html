@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New Person</title>
+</head>
+<body>
+
+<form th:method="POST" th:action="@{/people}" th:object="${person}">
+    <label for="credentials">Enter person credentials: </label>
+    <input type="text" th:field="*{credentials}" id="credentials"/>
+        <div style="color:red" th:if="${#fields.hasErrors('credentials')}" th:errors="*{credentials}">Error</div>
+    <br>
+
+    <label for="dateOfBirth">Enter year of birth: </label>
+    <input type="text" th:field="*{birthDate}" id="dateOfBirth"/>
+        <div style="color:red" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}">Error</div>
+    <hr>
+
+    <input type="submit" value="Create"/>
+</form>
+
+</body>
+</html>
