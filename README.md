@@ -1,0 +1,2 @@
+# LibraryServiceJPA
+Simple CRUD app
