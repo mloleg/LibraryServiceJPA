@@ -1,0 +1,49 @@
+version: '3'
+
+volumes:
+  cache:
+  postgres:
+
+networks:
+  postgres:
+    driver: bridge
+
+services:
+  app:
+    build:
+      context:  .
+    container_name: libraryService
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - .env
+    ports:
+      - '8080:8080'
+
+  postgres:
+    container_name: postgres-library-service
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+      PG_DATA: /data/postgres
+    volumes:
+      - ./src/main/resources/db-init:/docker-entrypoint-init
+      - postgres:/data/postgres
+    ports:
+      - "5440:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  redis:
+    image: redis:7.2.4
+    restart: always
+    container_name: redis
+    ports:
+      - '6379:6379'
+    command: ["redis-server", "--save 20 1", "--loglevel warning"]
+    volumes:
+      - cache:/data

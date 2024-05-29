@@ -3,46 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <title>Show Book</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
-<span>Title: </span> <span th:text="${book.getTitle()}">Title</span>
-<br/>
-<span>Publication year: </span> <span th:text="${book.getPublicationYear()}">Publication year</span>
-<br/>
-<span>Author: </span> <span th:text="${book.getAuthor()}">Author</span>
-<br/>
-<span>ID: </span> <span th:text="${book.getBookId()}">ID</span>
-<br/><br/>
+<div th:insert="~{navbar :: navbar}"></div>
+<div class="container mt-5">
+    <span>Title: </span> <span th:text="${book.getTitle()}">Title</span>
+    <br/>
+    <span>Publication year: </span> <span th:text="${book.getPublicationYear()}">Publication year</span>
+    <br/>
+    <span>Author: </span> <span th:text="${book.getAuthor()}">Author</span>
+    <br/>
+    <span>ID: </span> <span th:text="${book.getBookId()}">ID</span>
+    <br/><br/>
 
-<div th:if="${bookOwner}">
-    <span>Book owner: </span> <span th:text="${bookOwner.getCredentials()}">Owner</span>
+    <div th:if="${bookOwner}">
+        <span>Book owner: </span> <span th:text="${bookOwner.getCredentials()}">Owner</span>
 
-    <form th:method="PATCH" th:action="@{/books/{id}/release(id=${book.getBookId()})}">
-        <input type="submit" value="Free book"/>
+        <form th:method="PATCH" th:action="@{/books/{id}/release(id=${book.getBookId()})}">
+            <input type="submit" value="Free book"/>
+        </form>
+    </div>
+
+    <div th:if="${people}">
+        <span>The book is free. Choose person to assign to?</span>
+
+        <form th:method="PATCH" th:action="@{/books/{id}/assign(id=${book.getBookId()})}">
+            <label for="person">Choose person</label>
+            <select th:object="${person}" th:field="*{userId}" id="person">
+                <option th:each="person : ${people}" th:value="${person.getUserId()}"
+                        th:text="${person.getCredentials()}">
+                </option>
+            </select>
+            <input type="submit" value="Assign book"/>
+        </form>
+    </div>
+
+    <hr>
+
+    <form th:method="GET" th:action="@{/books/{id}/edit(id=${book.getBookId()})}">
+        <input type="submit" value="Edit"/>
     </form>
-</div>
 
-<div th:if="${people}">
-    <span>The book is free. Choose person to assign to?</span>
-
-    <form th:method="PATCH" th:action="@{/books/{id}/assign(id=${book.getBookId()})}">
-        <label for="person">Choose person</label>
-        <select th:object="${person}" th:field="*{userId}" id="person">
-            <option th:each="person : ${people}" th:value="${person.getUserId()}" th:text="${person.getCredentials()}">
-            </option>
-        </select>
-        <input type="submit" value="Assign book"/>
+    <form th:method="DELETE" th:action="@{/books/{id}(id=${book.getBookId()})}">
+        <input type="submit" value="Delete"/>
     </form>
+
+    <form id="logout-form" th:action="@{/logout}" th:method="POST">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </div>
-
-<hr>
-
-<form th:method="GET" th:action="@{/books/{id}/edit(id=${book.getBookId()})}">
-    <input type="submit" value="Edit"/>
-</form>
-
-<form th:method="DELETE" th:action="@{/books/{id}(id=${book.getBookId()})}">
-    <input type="submit" value="Delete"/>
-</form>
 </body>
 </html>
