@@ -1,86 +1,28 @@
 package ru.mloleg.libraryservicejpa.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 import ru.mloleg.libraryservicejpa.models.Book;
 import ru.mloleg.libraryservicejpa.models.Person;
-import ru.mloleg.libraryservicejpa.repositories.BooksRepository;
 
-import java.util.Date;
 import java.util.List;
 
-@Service
-@Transactional(readOnly = true)
-public class BooksService {
-    private final BooksRepository booksRepository;
+public interface BooksService {
 
-    @Autowired
-    public BooksService(BooksRepository booksRepository) {
-        this.booksRepository = booksRepository;
-    }
+    List<Book> getAll();
 
-    public List<Book> findAll() {
-        return booksRepository.findAll();
-    }
+    Book getById(int id);
 
-    public Book findOne(int id) {
-        return booksRepository.findById(id).orElse(null);
-    }
+    List<Book> getWithPagination(Integer page, Integer booksPerPage, boolean sortBy);
 
-    public List<Book> findWithPagination(Integer page, Integer booksPerPage, boolean sortByYear) {
-        if (sortByYear) {
-            return booksRepository.findAll(PageRequest.of(page, booksPerPage, Sort.by("publicationYear")))
-                    .getContent();
-        } else {
-            return booksRepository.findAll(PageRequest.of(page, booksPerPage)).getContent();
-        }
-    }
+    List<Book> getByTitle(String title);
 
-    public Person getBookOwner(int id) {
-        if (booksRepository.findById(id).isPresent()) {
-            return booksRepository.findById(id).get().getOwner();
-        } else {
-            return null;
-        }
-    }
+    Book create(Book book);
 
-    public List<Book> findBookByTitle(String query) {
-        return booksRepository.findBookByTitleIgnoreCaseStartingWith(query);
-    }
+    Book update(int id, Book book);
 
-    @Transactional
-    public void save(Book book) {
-        booksRepository.save(book);
-    }
+    void delete(int id);
 
-    @Transactional
-    public void update(int id, Book book) {
-        book.setBookId(id);
-        book.setOwner(booksRepository.findById(id).get().getOwner());
-        booksRepository.save(book);
-    }
+    Book release(int id);
 
-    @Transactional
-    public void delete(int id) {
-        booksRepository.deleteById(id);
-    }
-
-    @Transactional
-    public void release(int id) {
-        if (booksRepository.findById(id).isPresent()) {
-            booksRepository.findById(id).get().setOwner(null);
-            booksRepository.findById(id).get().setTakenAt(null);
-        }
-    }
-
-    @Transactional
-    public void assign(int id, Person person) {
-        if (booksRepository.findById(id).isPresent()) {
-            booksRepository.findById(id).get().setOwner(person);
-            booksRepository.findById(id).get().setTakenAt(new Date());
-        }
-    }
+    Book assign(int id, Person person);
 }

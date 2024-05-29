@@ -4,12 +4,19 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "Book")
-public class Book {
+@Data
+@Getter
+@Setter
+public class Book implements Serializable {
     @Id
     @Column(name = "book_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +47,9 @@ public class Book {
     @Transient
     private boolean isExpired;
 
+    @Column(name = "image")
+    private String image;
+
     public Book() {}
 
     public Book(int bookId, String title, String author, int publicationDate) {
@@ -47,62 +57,6 @@ public class Book {
         this.title = title;
         this.author = author;
         this.publicationYear = publicationDate;
-    }
-
-    public Person getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Person person) {
-        this.owner = person;
-    }
-
-    public int getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(int bookId) {
-        this.bookId = bookId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public int getPublicationYear() {
-        return publicationYear;
-    }
-
-    public void setPublicationYear(int publicationYear) {
-        this.publicationYear = publicationYear;
-    }
-
-    public Date getTakenAt() {
-        return takenAt;
-    }
-
-    public void setTakenAt(Date takenAt) {
-        this.takenAt = takenAt;
-    }
-
-    public boolean isExpired() {
-        return isExpired;
-    }
-
-    public void setExpired(boolean expired) {
-        isExpired = expired;
     }
 
     @Override
